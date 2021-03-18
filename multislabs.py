@@ -394,6 +394,19 @@ def MapAccD(n1,n2,d11,d12,d21,d22,N,phi0,nsamples):
     plt.savefig('AccelerationDistanceMap/AccD_thickness=({0}nm-{1}nm)x({2}nm-{3}nm)_res=({4})x({5}).pdf'.format(d1[0],d1[-1],d2[0],d2[-1],n1,n2))
     plt.show()
     
+print("Acceleration distance for : \nN = 5\nd1 = 7.428 nm\nd2 = 816.32 nm :\nAcc. D. = {0} millions of km\nCorresponding reflectivity : {1}".format(computeAccD(0.007428,0.81632,5,0,500)/1e9,computeRMoy(0.007428,0.81632,5,0,500)))
+    
+def AccDvsRmoy() : 
+    #max Rmoy
+    d1 = 0.086
+    d2 = 0.523
+    N = 5
+    phi0 = 0
+    nsamples = 500
+    Rmoy = computeRMoy(d1,d2,N,phi0,nsamples)
+    AccD = computeAccD(d1,d2,N,phi0,nsamples)
+    plt.plot(AccD,Rmoy,label="Mean reflectivity maximization")
+    #min AccD
     
 ###################################################################################################
 ###################################################################################################
