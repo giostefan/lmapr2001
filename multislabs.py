@@ -391,7 +391,7 @@ def MapAccD(n1,n2,d11,d12,d21,d22,N,phi0,nsamples):
     plt.xlabel("Slab (d1) thickness [µm]")
     plt.ylabel("Aerogel (d2) thickness [µm]")
     plt.title("Minimum : Acc. D = {0:.3f} millions of km\nat d1 = {1:.3f} µm and d2 = {2:.3f} µm\nR = {3:.3f}".format(computeAccD(d1max,d2max,N,phi0,nsamples)/1e9,d1max,d2max,computeRMoy(d1max,d2max,N,phi0,nsamples)))
-    plt.savefig('AccelerationDistanceMap/AccD_thickness=({0}nm-{1}nm)x({2}nm-{3}nm)_res=({4})x({5}).pdf'.format(d1[0],d1[-1],d2[0],d2[-1],n1,n2))
+    plt.savefig('AccelerationDistanceMap/AccD_thickness=({0}µm-{1}µm)x({2}µm-{3}µm)_res=({4})x({5}).pdf'.format(d1[0],d1[-1],d2[0],d2[-1],n1,n2))
     plt.show()
     
 print("Acceleration distance for : \nN = 5\nd1 = 7.428 nm\nd2 = 816.32 nm :\nAcc. D. = {0} millions of km\nCorresponding reflectivity : {1}".format(computeAccD(0.007428,0.81632,5,0,500)/1e9,computeRMoy(0.007428,0.81632,5,0,500)))
@@ -404,10 +404,19 @@ def AccDvsRmoy() :
     phi0 = 0
     nsamples = 500
     Rmoy = computeRMoy(d1,d2,N,phi0,nsamples)
-    AccD = computeAccD(d1,d2,N,phi0,nsamples)
-    plt.plot(AccD,Rmoy,label="Mean reflectivity maximization")
+    AccD = computeAccD(d1,d2,N,phi0,nsamples)/1e9
+    plt.plot(AccD,Rmoy,label="Average reflectivity maximization")
     #min AccD
-    
+    d1 = 0.007428
+    d2 = 0.81632
+    Rmoy = computeRMoy(d1,d2,N,phi0,nsamples)
+    AccD = computeAccD(d1,d2,N,phi0,nsamples)/1e9
+    plt.plot(AccD,Rmoy,label="Acceleration distance minimization")
+    plt.legend()
+    plt.xlabel("Acceleration distance [millions of km]")
+    plt.ylabel("Average reflectivity [-]")
+    plt.title("Average reflectivity vs. Acceleration distance")
+    plt.show()
 ###################################################################################################
 ###################################################################################################
 ###################################################################################################
