@@ -187,9 +187,9 @@ def calculA(R,T):
 #calcul de l'absorbance
 N0 = 1-1j*0
 N2 = 1-1j*0
-N = 3
-d1 = 90*10**-9
-d2 = 400*10**-9
+N = 5
+d1 = 94*10**-9
+d2 = 434*10**-9
 c = 3*10**8
 phi0 = np.linspace(0,(pi/2)-0.001,100)
 #v = np.linspace(0,0.2*c,100)
@@ -203,8 +203,8 @@ for i in range(0,len(phi0)):
     T = calculT(N0,N2,N,phi0[i],omega,d1,d2,c)
     A[i,:] = calculA(R,T)
 
-I0 = 10e9
-S = 10
+I0 = 10**10 #[W/m^2]
+S = 10   #[m^2]
 Apower = A*I0*S
 
 #calcul de l'émissivité hémisphérique
@@ -219,10 +219,10 @@ for j in range(0,len(omega)):
 #calcul du black body
     
 Tbbd = 1000 #[K]
-h = 6.626*10**-34 #constante de Planck
-k = 1.38*10**-23 #constante de boltzmann
-lam = c*2*pi/omega
-bbd = (2*h*c**2)/(lam**5*(np.exp((h*c)/(k*Tbbd*lam))-1))
+h = 6.626*10**-34 #constante de Planck [m^2*kg/s]
+k = 1.38*10**-23 #constante de boltzmann [m^2*kg/s^2*K]
+lam1 = c*2*pi/omega
+bbd = (2*h*c**2)/(lam1**5*(np.exp((h*c)/(k*Tbbd*lam1))-1))
 
 
 fig, ax1 = plt.subplots()
@@ -241,16 +241,16 @@ plt.show()
 Tbbd2 = np.linspace(1,1500,1000)
 bbd2 = np.zeros((len(omega),len(Tbbd2)))
 for index in range(0,len(Tbbd2)):
-    bbd2[index,:] = (2*h*c**2)/(lam**5*(np.exp((h*c)/(k*Tbbd2*lam))-1))
+    bbd2[index,:] = (2*h*c**2)/(lam1**5*(np.exp((h*c)/(k*Tbbd2[index]*lam1))-1))
 
 #radiated power
 rp = np.zeros(len(Tbbd2))
 for index2 in range(0,len(Tbbd2)):
-    cal = epshemi*bbd2[:,index2]
-    rp[index2] = -2*S*np.trapz(cal,lam)
+    cal = epshemi*bbd2[index2,:]
+    rp[index2] = -2*S*np.trapz(cal,lam1)
 
 #absorbed power
-kappa = 10**-5    #ligne à modifier
+kappa = 10**-9    #ligne à modifier
 
 Aa = np.zeros(len(Tbbd2))
 Ra = calculR2(N0,N2,N,phi0[0],omega,d1,d2,c,kappa)
@@ -259,14 +259,20 @@ Aa[:] = calculA(Ra[-1],Ta[-1])
 
 Apower2 = Aa*I0*S
     
-plt.plot(Tbbd2,Apower2*10**-5)
-plt.plot(Tbbd2,rp*10**-5)
+plt.plot(Tbbd2,Apower2)
+plt.plot(Tbbd2,rp)
 plt.xlabel("Temperature [K]")
+plt.show()
 
-intersec = 10
+intersec = 100
 index3 = 0
 for i2 in range(0,len(Tbbd2)):
     if intersec > np.abs(Apower2[i2]*10**-5-rp[i2]*10**-5):
         index3 = i2
+        intersec = np.abs(Apower2[i2]*10**-5-rp[i2]*10**-5)
 print(Tbbd2[index3])
     
+plt.imshow(A,cmap='hot',extent=[omega[0],omega[-1],phi0[0],phi0[-1]])
+plt.xscale("log")
+plt.colorbar()
+plt.show()
